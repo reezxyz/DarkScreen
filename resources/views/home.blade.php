@@ -158,18 +158,40 @@
             margin-bottom:25px;
         }
 
+        .movie-wrapper{
+            position:relative;
+        }
+
         .movies{
-            display:grid;
-            grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
-            gap:25px;
+            display:flex;
+            gap:20px;
+
+            overflow-x:auto;
+            overflow-y:hidden;
+
+            scroll-behavior:smooth;
+
+            padding:10px 0;
+
+            scrollbar-width:none;
+        }
+
+        .movies::-webkit-scrollbar{
+            display:none;
         }
 
         .movie-card{
+            min-width:160px;
+            max-width:160px;
+
+            flex-shrink:0;
+
             position:relative;
             overflow:hidden;
-            border-radius:12px;
+
+            border-radius:10px;
+
             transition:0.3s;
-            cursor:pointer;
         }
 
         .movie-card:hover{
@@ -178,31 +200,59 @@
 
         .movie-card img{
             width:100%;
+            height:240px;
+
+            object-fit:cover;
+
             display:block;
         }
 
         .movie-info{
-            position:absolute;
-            bottom:0;
-            left:0;
-            width:100%;
-            padding:20px;
-
-            background:linear-gradient(
-                to top,
-                rgba(0,0,0,0.95),
-                transparent
-            );
+            padding:12px;
         }
 
         .movie-title{
-            font-size:18px;
-            margin-bottom:8px;
+            font-size:14px;
+            margin-bottom:5px;
         }
 
         .movie-rating{
-            color:#f5c518;
-            font-size:14px;
+            font-size:12px;
+        }
+
+        .scroll-btn{
+            position:absolute;
+            top:50%;
+            transform:translateY(-50%);
+
+            width:50px;
+            height:50px;
+
+            border:none;
+            border-radius:50%;
+
+            background:rgba(0,0,0,0.7);
+            color:white;
+
+            font-size:24px;
+
+            cursor:pointer;
+
+            z-index:20;
+
+            transition:0.3s;
+        }
+
+        .scroll-btn:hover{
+            background:#e50914;
+        }
+
+        .left{
+            left:-20px;
+        }
+
+        .right{
+            right:-20px;
         }
 
     </style>
@@ -274,7 +324,13 @@
             🔥 Trending Movies
         </h2>
 
-        <div class="movies">
+        <div class="movie-wrapper">
+
+    <button class="scroll-btn left">
+        ❮
+    </button>
+
+    <div class="movies" id="movieSlider">
 
             @foreach($movies as $movie)
 
@@ -305,7 +361,51 @@
 
         </div>
 
+        <button class="scroll-btn right">
+            ❯
+        </button>
+
     </div>
 
+    </div>
+
+    <script>
+
+    const slider = document.getElementById('movieSlider');
+
+    const rightBtn = document.querySelector('.right');
+    const leftBtn = document.querySelector('.left');
+
+    rightBtn.addEventListener('click', () => {
+
+        slider.scrollBy({
+            left:800,
+            behavior:'smooth'
+        });
+
+    });
+
+    leftBtn.addEventListener('click', () => {
+
+        slider.scrollBy({
+            left:-800,
+            behavior:'smooth'
+        });
+
+    });
+
+    slider.addEventListener('wheel', (e) => {
+
+        if(e.shiftKey){
+
+            e.preventDefault();
+
+            slider.scrollLeft += e.deltaY;
+
+        }
+
+    });
+
+    </script>
 </body>
 </html>
