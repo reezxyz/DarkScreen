@@ -255,6 +255,42 @@
             right:-20px;
         }
 
+        .navbar-right form{
+            display:flex;
+            align-items:center;
+            gap:15px;
+        }
+
+        .search-bar{
+            padding:10px 15px;
+
+            border:none;
+            outline:none;
+
+            border-radius:5px;
+
+            background:rgba(255,255,255,0.1);
+
+            color:white;
+
+            width:220px;
+        }
+
+        .language-select{
+            padding:10px;
+
+            border:none;
+            outline:none;
+
+            border-radius:5px;
+
+            background:rgba(255,255,255,0.1);
+
+            color:white;
+
+            cursor:pointer;
+        }
+
     </style>
 </head>
 <body>
@@ -273,6 +309,46 @@
             <a href="#">Movies</a>
             <a href="#">TV Shows</a>
         </div>
+
+    
+
+        <form method="GET" action="/">
+
+            <input
+                type="text"
+                name="search"
+                placeholder="Search movie..."
+                class="search-bar"
+            >
+
+            <select
+                name="lang"
+                class="language-select"
+                onchange="this.form.submit()"
+            >
+                <option value="en-US"
+                    {{ $lang == 'en-US' ? 'selected' : '' }}>
+                    English
+                </option>
+
+                <option value="id-ID"
+                    {{ $lang == 'id-ID' ? 'selected' : '' }}>
+                    Indonesia
+                </option>
+
+                <option value="ja-JP"
+                    {{ $lang == 'ja-JP' ? 'selected' : '' }}>
+                    Japanese
+                </option>
+
+                <option value="ko-KR"
+                    {{ $lang == 'ko-KR' ? 'selected' : '' }}>
+                    Korean
+                </option>
+
+            </select>
+
+        </form>
 
     </div>
 
@@ -369,43 +445,135 @@
 
     </div>
 
+    <!-- THRILLER PICKS -->
+
+<div class="section">
+
+    <h2 class="section-title">
+        🩸 Thriller Picks
+    </h2>
+
+    <div class="movie-wrapper">
+
+        <button class="scroll-btn left thriller-left">
+            ❮
+        </button>
+
+        <div
+            class="movies thriller-slider"
+        >
+
+            @foreach($thrillerMovies as $movie)
+
+                <a
+                    href="/movie/{{ $movie['id'] }}"
+                    class="movie-card"
+                >
+
+                    <img
+                        src="https://image.tmdb.org/t/p/w780{{ $movie['backdrop_path'] }}"
+                    >
+
+                    <div class="movie-info">
+
+                        <div class="movie-title">
+                            {{ $movie['original_title'] }}
+                        </div>
+
+                        <div class="movie-rating">
+                            ⭐ {{ $movie['vote_average'] }}
+                        </div>
+
+                    </div>
+
+                </a>
+
+            @endforeach
+
+        </div>
+
+        <button class="scroll-btn right thriller-right">
+            ❯
+        </button>
+
+    </div>
+
+</div>
+
+<iframe src="https://www.vidking.net/embed/movie/228150" width="100%" height="600" frameborder="0" allowfullscreen> </iframe>
+
     <script>
 
-    const slider = document.getElementById('movieSlider');
+function setupSlider(
+    sliderClass,
+    leftClass,
+    rightClass
+){
 
-    const rightBtn = document.querySelector('.right');
-    const leftBtn = document.querySelector('.left');
+    const slider =
+        document.querySelector(sliderClass);
 
-    rightBtn.addEventListener('click', () => {
+    const leftBtn =
+        document.querySelector(leftClass);
 
-        slider.scrollBy({
-            left:800,
-            behavior:'smooth'
-        });
+    const rightBtn =
+        document.querySelector(rightClass);
 
-    });
+    rightBtn.addEventListener(
+        'click',
+        () => {
 
-    leftBtn.addEventListener('click', () => {
-
-        slider.scrollBy({
-            left:-800,
-            behavior:'smooth'
-        });
-
-    });
-
-    slider.addEventListener('wheel', (e) => {
-
-        if(e.shiftKey){
-
-            e.preventDefault();
-
-            slider.scrollLeft += e.deltaY;
+            slider.scrollBy({
+                left:800,
+                behavior:'smooth'
+            });
 
         }
+    );
 
-    });
+    leftBtn.addEventListener(
+        'click',
+        () => {
 
-    </script>
+            slider.scrollBy({
+                left:-800,
+                behavior:'smooth'
+            });
+
+        }
+    );
+
+    slider.addEventListener(
+        'wheel',
+        (e) => {
+
+            if(e.shiftKey){
+
+                e.preventDefault();
+
+                slider.scrollLeft +=
+                    e.deltaY;
+
+            }
+
+        }
+    );
+}
+
+// Trending
+setupSlider(
+    '#movieSlider',
+    '.left',
+    '.right'
+);
+
+// Thriller
+setupSlider(
+    '.thriller-slider',
+    '.thriller-left',
+    '.thriller-right'
+);
+
+</script>
 </body>
 </html>
