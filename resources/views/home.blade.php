@@ -500,8 +500,6 @@
 
 </div>
 
-<iframe src="https://www.vidking.net/embed/movie/228150" width="100%" height="600" frameborder="0" allowfullscreen> </iframe>
-
     <script>
 
 function setupSlider(

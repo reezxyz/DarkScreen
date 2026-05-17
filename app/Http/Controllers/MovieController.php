@@ -48,4 +48,78 @@ class MovieController extends Controller
             )
         );
     }
+    public function movie($id)
+    {
+        $response = Http::get(
+            "https://api.themoviedb.org/3/movie/$id",
+            [
+                'api_key' => env('TMDB_API_KEY'),
+                'append_to_response' =>
+                    'videos,images,credits'
+            ]
+        );
+
+        $movie = $response->json();
+
+        // Trailer
+        $trailer = collect(
+            $movie['videos']['results'] ?? []
+        )
+        ->where('site', 'YouTube')
+        ->firstWhere('type', 'Trailer');
+
+        // Logo PNG (prioritas English)
+        $logos = collect(
+            $movie['images']['logos'] ?? []
+        );
+
+        $logo =
+            $logos->firstWhere(
+                'iso_639_1',
+                'en'
+            )
+            ??
+            $logos->firstWhere(
+                'iso_639_1',
+                null
+            )
+            ??
+            $logos->first();
+
+        // Runtime format
+        $runtime = $movie['runtime'] ?? 0;
+
+        $hours = floor($runtime / 60);
+        $minutes = $runtime % 60;
+
+        $formattedRuntime =
+            $hours . 'h ' .
+            $minutes . 'm';
+
+        
+
+        $actors = collect(
+            $movie['credits']['cast'] ?? []
+        )->take(12);
+
+        return view(
+            'movie',
+            compact(
+                'movie',
+                'trailer',
+                'logo',
+                'formattedRuntime',
+                'actors'
+            )
+        );
+
+    }
+
+    public function watch($id)
+{
+    return view(
+        'watch',
+        compact('id')
+    );
+}
 }
